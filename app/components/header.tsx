@@ -1,3 +1,4 @@
+import { UserButton } from "@clerk/nextjs";
 import Image from "next/image";
 
 export default function Header() {
@@ -22,6 +23,9 @@ export default function Header() {
             priority
           />
         </a>
+        <div className="pl-2 h-10 flex items-center">
+          <UserButton />
+        </div>
       </div>
     </div>
   );

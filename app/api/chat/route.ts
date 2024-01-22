@@ -3,6 +3,7 @@ import { ChatMessage, MessageContent, OpenAI } from "llamaindex";
 import { NextRequest, NextResponse } from "next/server";
 import { createChatEngine } from "./engine";
 import { LlamaIndexStream } from "./llamaindex-stream";
+import { auth, currentUser } from "@clerk/nextjs";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -28,6 +29,12 @@ const convertMessageContent = (
 
 export async function POST(request: NextRequest) {
   try {
+    if (!auth().sessionClaims?.publicMetadata?.chat) {
+      return NextResponse.json(
+        { error: "current user not approved to chat" },
+        { status: 401 },
+      );
+    }
     const body = await request.json();
     const { messages, data }: { messages: ChatMessage[]; data: any } = body;
     const userMessage = messages.pop();
